@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-class Page1  extends StatelessWidget {
+
+class Instructions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-debugShowCheckedModeBanner: false,
-title: 'Information',
-home: HomePage(),
+      debugShowCheckedModeBanner: false,
+      title: 'Information',
+      home: HomePage(),
     );
   }
 }
+
 final List<Color> colors = [
   Color(0xff184042),
   Color(0xff255152),
@@ -31,7 +33,7 @@ class HomePage extends StatelessWidget {
           ListView(
             children: List.generate(
                 6,
-                    (index) => Transform.translate(
+                (index) => Transform.translate(
                     offset: Offset(100 * index.toDouble() - 210,
                         -77 * index.toDouble() + 29),
                     child: Transform.rotate(
@@ -41,7 +43,7 @@ class HomePage extends StatelessWidget {
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                height: size.height * 0.7,
+                height: size.height * 0.6,
                 width: double.infinity,
                 decoration: BoxDecoration(
                     color: Colors.white,
@@ -50,15 +52,16 @@ class HomePage extends StatelessWidget {
                       topRight: Radius.circular(20),
                     )),
                 child: Column(
+
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.all(20),
+                      padding: EdgeInsets.all(30),
                       child: Text(
-                        'Information',
+                        'Instructions',
                         style: TextStyle(
                           color: colors[3],
-                          fontSize: 25.0,
+                          fontSize: 30,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'RobotoMono',
                         ),
@@ -67,13 +70,13 @@ class HomePage extends StatelessWidget {
                     Card(
                       child: ListTile(
                         leading: Icon(
-                          Icons.info_outline,
-                          color: colors[3],
+                          Icons.check,
+//                          color: colors[3],
+                        color: Colors.green,
                         ),
                         title: Text(
-                          'This application allows you to connect some networks',
+                          'This application is just for fun!!',
                           style: TextStyle(
-
                             fontFamily: 'Bitter',
                           ),
                         ),
@@ -84,51 +87,46 @@ class HomePage extends StatelessWidget {
                     Card(
                       child: ListTile(
                         leading: Icon(
-                          Icons.info_outline,
-                          color: colors[3],
+                          Icons.check,
+//                          color: colors[3],
+                        color: Colors.green,
                         ),
                         title: Text(
-                          'How do i know if i am able to  connect to a network?',
+                          'Enable Wifi and location',
                           style: TextStyle(
-
                             fontFamily: 'Bitter',
                           ),
                         ),
-                        subtitle: Text(
-                            'The application will show you a green network.'),
                       ),
                     ),
                     Card(
                       child: ListTile(
                         leading: Icon(
-                          Icons.info_outline,
-                          color: Colors.yellow,
+                          Icons.check,
+                          color: Colors.green,
                         ),
                         title: Text(
-                          'Why does the application always show me red networks?',
+                          'Go to Scan wifi Page',
                           style: TextStyle(
                             fontFamily: 'Bitter',
-
                           ),
                         ),
-                        subtitle: Text(
-                            'Be patient... You need to find a green networks'),
+
                       ),
                     ),
                     Card(
                       child: ListTile(
                         leading: Icon(
-                          Icons.info_outline,
-                          color: Colors.red,
+                          Icons.check,
+                          color: Colors.green,
                         ),
                         title: Text(
-                          'What can i do if my router is able to connect with this application?',
+                          'Pull to refresh the screen ',
                           style: TextStyle(
                             fontFamily: 'Bitter',
                           ),
                         ),
-                        subtitle: Text(
-                            'You need to change your router\'s information. Contact your internet provider'),
+
                       ),
                     ),
                   ],

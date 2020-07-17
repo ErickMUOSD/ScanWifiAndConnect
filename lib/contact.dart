@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
-class Page3 extends StatelessWidget {
+class Contact extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
      home: Scaffold(
-       backgroundColor: Colors.teal,
+       backgroundColor:  Color(0xff365F61),
        body: SafeArea(
          child: Column(
            children: <Widget>[
              CircleAvatar(
-               radius: 50.0,
-              backgroundImage: AssetImage(' images/Erick_photo'),
+               radius: 80.0,
+              backgroundImage: AssetImage('images/Erick_photo.jpg'),
 
              ),
              Text(
                'Erick Sanabria ',
                style: TextStyle(
-                 ///fontFamily: 'Pacifico'
+                 fontFamily: 'Pacifico',
                  fontSize: 40.0,
                  color: Colors.white,
                  fontWeight:  FontWeight.bold
@@ -26,7 +27,7 @@ class Page3 extends StatelessWidget {
                'Flutter Developer',
                style: TextStyle(
                   fontFamily: 'Source Sans Pro',
-                 color: Colors.teal.shade100,
+                 color: Colors.white,
                  fontSize:  20.0,
                  letterSpacing: 2.5,
                  fontWeight: FontWeight.bold
@@ -44,10 +45,10 @@ class Page3 extends StatelessWidget {
                child: ListTile(
                  leading: Icon(
                    Icons.phone,
-                   color: Colors.teal,
+                   color: Color(0xff365F61),
                  ),
                  title: Text(
-                   '7228026144',
+                   '7228021231',
                    style: TextStyle(
                      color: Colors.teal.shade900,
                      fontFamily: 'Source Sans pro',
@@ -61,12 +62,12 @@ class Page3 extends StatelessWidget {
                child: ListTile(
                  leading: Icon(
                    Icons.email,
-                   color: Colors.teal
+                   color: Color(0xff365F61),
                  ),
                  title: Text(
-                   'Martinoli944@gmail.com',
+                   'madeupofstar@gmail.com',
                    style: TextStyle(
-                     fontSize:  20.0,
+                     fontSize:  19.0,
                      color: Colors.teal.shade900,
                      fontFamily: 'Source Sans Pro'
                    ),
