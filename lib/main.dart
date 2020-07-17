@@ -4,21 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:wifi_configuration_2/wifi_configuration_2.dart';
 
 WifiConfiguration wifiConfiguration;
-void main() => runApp(Myapp());
+void main() => runApp(MyHomePageMain());
 
-class Myapp extends StatefulWidget {
+class MyHomePageMain extends StatefulWidget {
   @override
-  _MyappState createState() => _MyappState();
+  _MyHomePageMainState createState() => _MyHomePageMainState();
 }
 
-class _MyappState extends State<Myapp> {
+class _MyHomePageMainState extends State<MyHomePageMain> {
+  GlobalKey<RefreshIndicatorState> refreshKey;
   bool isGood = false;
-
   List<WifiNetwork> wifiNetworkList = List();
   String textMightAbleToConnect = '';
   String wifiNameToConnect = '', wifiPasswordToConnect = '';
-
-  initState() {
+  @override
+  void initState() {
+    // TODO: implement initState
     super.initState();
     wifiConfiguration = WifiConfiguration();
     checkConnection();
@@ -26,39 +27,30 @@ class _MyappState extends State<Myapp> {
 
   @override
   Widget build(BuildContext context) {
-    //scanHandler();
-
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       home: Scaffold(
-          backgroundColor: Color(0xff4A7375),
-          appBar: AppBar(
-            elevation: 10,
-            backgroundColor: Color(0xff255152),
-            centerTitle: true,
-            title: Text(
-              "Scan wifi",
-              style: TextStyle(fontSize: 30.0, fontFamily: 'Bitter'),
-            ),
+        backgroundColor: Color(0xff4A7375),
+        appBar: AppBar(
+          elevation: 10,
+          backgroundColor: Color(0xff255152),
+          centerTitle: true,
+          title: Text(
+            "Scan wifi",
+            style: TextStyle(fontSize: 30.0, fontFamily: 'Bitter'),
           ),
-          body: getListView(),
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: Color(0xff365F61),
-            child: IconButton(
-              icon: Icon(
-                Icons.refresh,
-                color: Colors.white,
-                size: 30,
-              ),
-            ),
-            onPressed: () {
-              checkConnection();
+        ),
+        body: RefreshIndicator(
+          key: refreshKey,
+            onRefresh: ()async{
+                 await refreshList();
             },
-          )),
+            child: listCenter()
+        ),
+      ),
     );
   }
 
-  ListView getListView() {
+  ListView listCenter() {
     return ListView.builder(
         itemCount: wifiNetworkList.length,
         itemBuilder: (context, int index) {
@@ -130,14 +122,11 @@ class _MyappState extends State<Myapp> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),
                     ),
-                     splashColor: isGood ? Colors.green : Colors.red,
+                    splashColor: isGood ? Colors.green : Colors.red,
                     animationDuration: Duration(seconds: 3),
                     child: Text(
                       'Connect',
-                      style: TextStyle(
-
-                          fontSize: 20,
-                          fontFamily: 'Bitter'),
+                      style: TextStyle(fontSize: 20, fontFamily: 'Bitter'),
                     ),
                   ),
                 ),
@@ -149,12 +138,10 @@ class _MyappState extends State<Myapp> {
 
   void setValuesToConnect(String networkName, String networkMac) {
     String password, networkNameSUb;
-    if(networkName.length < 8){
-       networkNameSUb =networkName.substring(4, networkName.length-1);
-
-    }else{
-      networkNameSUb =networkName.substring(4,8);
-
+    if (networkName.length < 8) {
+      networkNameSUb = networkName.substring(4, networkName.length - 1);
+    } else {
+      networkNameSUb = networkName.substring(4, 8);
     }
     password =
         networkMac.replaceAll(RegExp(':'), '').toUpperCase().substring(2, 8) +
@@ -198,5 +185,10 @@ class _MyappState extends State<Myapp> {
     Wifi.connection(wifiNameToConnect, wifiPasswordToConnect).then((v) {
       print(v);
     });
+  }
+  Future<Null> refreshList() async{
+    await Future.delayed(Duration(seconds: 3));
+    checkConnection();
+    return null;
   }
 }
