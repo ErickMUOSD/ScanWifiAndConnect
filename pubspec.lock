@@ -198,13 +198,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.8"
-  wifi:
-    dependency: "direct main"
-    description:
-      name: wifi
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.5"
   wifi_configuration_2:
     dependency: "direct main"
     description:
@@ -221,4 +214,3 @@ packages:
     version: "3.6.1"
 sdks:
   dart: ">=2.7.0 <3.0.0"
-  flutter: ">=0.1.4 <2.0.0"

@@ -3,19 +3,22 @@ import 'package:flutter/material.dart';
 class Contact extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Color(0xff365F61),
         body: SafeArea(
           child: Column(
+
             children: <Widget>[
               CircleAvatar(
+
                 radius: 80.0,
                 backgroundImage: AssetImage('images/Erick_photo.jpg'),
               ),
               Text(
-                'Erick Sanabria ',
+                'Erick Sanabria',
                 style: TextStyle(
                     fontFamily: 'Pacifico',
                     fontSize: 40.0,
@@ -70,7 +73,15 @@ class Contact extends StatelessWidget {
                         fontFamily: 'Source Sans Pro'),
                   ),
                 ),
-              )
+              ),
+              Text(
+                'This app is just for fun!! and for recreational purposes',
+                style: TextStyle(
+                    fontFamily: 'Source Sans Pro',
+                    fontSize: 13.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+              ),
             ],
           ),
         ),

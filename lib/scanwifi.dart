@@ -1,4 +1,3 @@
-import 'package:wifi/wifi.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wifi_configuration_2/wifi_configuration_2.dart';
@@ -26,6 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<WifiNetwork> _wifiNetworkList = List();
   String _textMightAbleToConnect = '';
   String _wifiNameToConnect = '', _wifiPasswordToConnect = '';
+  String _valueTextDialog1 = ' ', _valueTextDialog2 =' ', _valueAnimation ='1';
   @override
   void initState() {
     // TODO: implement initState
@@ -55,9 +55,13 @@ class _MyHomePageState extends State<MyHomePage> {
     return RefreshIndicator(
       key: refreshKey,
       onRefresh: () async {
+        setState(() {
+          _wifiNetworkList.removeRange(0, _wifiNetworkList.length);
+        });
         await _refreshList();
       },
       child: ListView.builder(
+
           itemCount: _wifiNetworkList.length,
           itemBuilder: (context, int index) {
             WifiNetwork wifiNetwork = _wifiNetworkList[index];
@@ -124,7 +128,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         onPressed: () {
                           _setValuesToConnect(
                               wifiNetwork.ssid, wifiNetwork.bssid);
-                          _connection();
+
+                         getConnectionState();
                         },
                         textColor: Colors.white,
                         color: Color(0xff255152),
@@ -147,31 +152,41 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _showDialogM(String check) {
-    String Text1, Text2, route_animatiom = ' animations/Successful.gif';
 
-    if (check != 'WifiState.error') {
+  void getConnectionState() async {
+    WifiConnectionStatus connectionStatus =
+    await wifiConfiguration.connectToWifi(_wifiNameToConnect,_wifiPasswordToConnect,"wifi_configuration_2.dart");
 
-      Text1 = 'Connected';
-      Text2 = 'Successfully connected';
-      route_animatiom = '1';
+    switch (connectionStatus) {
+      case WifiConnectionStatus.connected:
+        print("connected 1");
+         _valueTextDialog1 = 'Connected';
+         _valueTextDialog2 = 'Successfully Connected';
+         _valueAnimation = '1';
+        break;
 
-    } else {
+      case WifiConnectionStatus.alreadyConnected:
+        print("alreadyConnected 2 ");
+        break;
 
-      Text1 = 'Failed';
-      Text2 = 'The password was incorrect or was changed by the owner';
-      route_animatiom = '2';
+      case WifiConnectionStatus.notConnected:
+        print("notConnected 3");
+        _valueTextDialog1 = 'Failed';
+        _valueTextDialog2 = 'Password incorrect or was changed by the owner';
+        _valueAnimation = '2';
+        break;
+
 
     }
     showDialog(
         context: context,
         builder: (_) => AssetGiffyDialog(
           image: Image.asset(
-            'animations/animation$route_animatiom.gif',
+            'animations/animation$_valueAnimation.gif',
             fit: BoxFit.cover,
           ),
           title: Text(
-            Text1,
+            _valueTextDialog1,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20.0,
@@ -179,16 +194,17 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           description: Text(
-            Text2,
+            _valueTextDialog2,
             textAlign: TextAlign.center,
           ),
-          entryAnimation: EntryAnimation.BOTTOM_RIGHT,
+          entryAnimation: EntryAnimation.RIGHT,
           onlyOkButton: true,
           buttonOkColor: Colors.green,
           onOkButtonPressed: () {
             Navigator.of(context).pop();
           },
-        ));
+        )
+    );
   }
 
   void _setValuesToConnect(String networkName, String networkMac) {
@@ -215,13 +231,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _checkConnection() async {
-    wifiConfiguration.isWifiEnabled().then((value) {
-      print('Is wifi enabled: ${value.toString()}');
-    });
-
-    wifiConfiguration.checkConnection().then((value) {
-      print('Value: ${value.toString()}');
-    });
 
     WifiConnectionObject wifiConnectionObject =
     await wifiConfiguration.connectedToWifi();
@@ -231,21 +240,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _getWifiList() async {
-    _wifiNetworkList = await wifiConfiguration.getWifiList();
-    print('Network list lenght: ${_wifiNetworkList.length.toString()}');
-    setState(() {});
+    var _wifiNetworkListLocal;
+    _wifiNetworkListLocal = await wifiConfiguration.getWifiList();
+    setState(() {
+      _wifiNetworkList = _wifiNetworkListLocal;
+    });
   }
 
-  Future<Null> _connection() async {
-    Wifi.connection(_wifiNameToConnect, _wifiPasswordToConnect).then((v) {
-      print(v);
-      _showDialogM(v.toString());
-    }
-    );
-  }
 
   Future<Null> _refreshList() async {
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(Duration(seconds: 2));
+
     _checkConnection();
     return null;
   }
