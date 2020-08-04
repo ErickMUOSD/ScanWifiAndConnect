@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wifi_configuration_2/wifi_configuration_2.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
-
 WifiConfiguration wifiConfiguration;
 
 class Scanwifi extends StatelessWidget {
@@ -31,7 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement initState
     super.initState();
     wifiConfiguration = WifiConfiguration();
-    _checkConnection();
+    _getWifiList();
   }
 
   @override
@@ -47,110 +46,130 @@ class _MyHomePageState extends State<MyHomePage> {
           style: TextStyle(fontSize: 30.0, fontFamily: 'Bitter'),
         ),
       ),
-      body: listCenter(),
+      body: widgets(),
+
+
+
     );
   }
+Column widgets(){
+    return Column(
+      children: <Widget>[
+      Expanded(
+        child: RefreshIndicator(
+        key: refreshKey,
+        onRefresh: () async {
+          setState(() {
+            _wifiNetworkList.removeRange(0, _wifiNetworkList.length);
+          });
+          await _refreshList();
+        },
+        child: ListView.builder(
 
-  RefreshIndicator listCenter() {
-    return RefreshIndicator(
-      key: refreshKey,
-      onRefresh: () async {
-        setState(() {
-          _wifiNetworkList.removeRange(0, _wifiNetworkList.length);
-        });
-        await _refreshList();
-      },
-      child: ListView.builder(
-
-          itemCount: _wifiNetworkList.length,
-          itemBuilder: (context, int index) {
-            WifiNetwork wifiNetwork = _wifiNetworkList[index];
-            _checkStateColor(wifiNetwork.ssid.substring(0, 4));
-            return SafeArea(
-              child: Card(
-                elevation: 10,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, top: 10),
-                          child: Icon(
-                            _isGood ? Icons.network_wifi : Icons.wifi_lock,
-                            color: _isGood ? Colors.green : Colors.red,
+            itemCount: _wifiNetworkList.length,
+            itemBuilder: (context, int index) {
+              WifiNetwork wifiNetwork = _wifiNetworkList[index];
+              _checkStateColor(wifiNetwork.ssid.substring(0, 4));
+              return SafeArea(
+                child: Card(
+                  elevation: 10,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10, top: 10),
+                            child: Icon(
+                              _isGood ? Icons.network_wifi : Icons.wifi_lock,
+                              color: _isGood ? Colors.green : Colors.red,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 40,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding:
-                              const EdgeInsets.only(top: 10, bottom: 10),
-                              child: Text(
-                                wifiNetwork.ssid,
-                                style: TextStyle(
-                                    letterSpacing: 1,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 25.0,
-                                    fontFamily: 'Bitter'),
+                          SizedBox(
+                            width: 40,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding:
+                                const EdgeInsets.only(top: 10, bottom: 10),
+                                child: Text(
+                                  wifiNetwork.ssid,
+                                  style: TextStyle(
+                                      letterSpacing: 1,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 25.0,
+                                      fontFamily: 'Bitter'),
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Text(
-                                wifiNetwork.bssid,
-                                style: TextStyle(fontFamily: 'Bitter'),
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text(
+                                  wifiNetwork.bssid,
+                                  style: TextStyle(fontFamily: 'Bitter'),
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Text(
-                                _textMightAbleToConnect,
-                                style: TextStyle(
-                                    color: _isGood ? Colors.green : Colors.red,
-                                    fontSize: 15.0,
-                                    fontFamily: 'Source Sans Pro'),
-                              ),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                    Center(
-                      child: RaisedButton(
-                        onPressed: () {
-                          _setValuesToConnect(
-                              wifiNetwork.ssid, wifiNetwork.bssid);
-
-                         getConnectionState();
-                        },
-                        textColor: Colors.white,
-                        color: Color(0xff255152),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        splashColor: _isGood ? Colors.green : Colors.red,
-                        animationDuration: Duration(seconds: 2),
-                        child: Text(
-                          'Connect',
-                          style: TextStyle(fontSize: 20, fontFamily: 'Bitter'),
-                        ),
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text(
+                                  _textMightAbleToConnect,
+                                  style: TextStyle(
+                                      color: _isGood ? Colors.green : Colors.red,
+                                      fontSize: 15.0,
+                                      fontFamily: 'Source Sans Pro'),
+                                ),
+                              )
+                            ],
+                          )
+                        ],
                       ),
-                    ),
-                  ],
+
+                      ButtonBar(
+                        alignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+
+                          RaisedButton(
+                            onPressed: () {
+                              _setValuesToConnect(
+                                  wifiNetwork.ssid, wifiNetwork.bssid);
+
+                              getConnectionState();
+                            },
+                            textColor: Colors.white,
+                            color: Color(0xff255152),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            splashColor: _isGood ? Colors.green : Colors.red,
+                            animationDuration: Duration(seconds: 2),
+                            child: Text(
+                              'Connect',
+                              style: TextStyle(fontSize: 20, fontFamily: 'Bitter'),
+                            ),
+                          ),
+
+                        ],
+                      )
+                    ],
+                  ),
+
                 ),
-              ),
-            );
-          }),
+              );
+            }
+        ),
+
+    ),
+      ),
+
+      ],
+
     );
-  }
+}
+
 
 
   void getConnectionState() async {
@@ -175,6 +194,8 @@ class _MyHomePageState extends State<MyHomePage> {
         _valueTextDialog2 = 'Password incorrect or was changed by the owner';
         _valueAnimation = '2';
         break;
+
+
 
 
     }
@@ -230,28 +251,28 @@ class _MyHomePageState extends State<MyHomePage> {
         : _textMightAbleToConnect = 'Network might not be able to connect';
   }
 
-  void _checkConnection() async {
-
-    WifiConnectionObject wifiConnectionObject =
-    await wifiConfiguration.connectedToWifi();
-    if (wifiConnectionObject != null) {
-      _getWifiList();
-    }
-  }
 
   Future<void> _getWifiList() async {
-    var _wifiNetworkListLocal;
-    _wifiNetworkListLocal = await wifiConfiguration.getWifiList();
-    setState(() {
-      _wifiNetworkList = _wifiNetworkListLocal;
-    });
+    WifiConnectionObject wifiConnectionObject =
+    await wifiConfiguration.connectedToWifi();
+
+    if (wifiConnectionObject != null) {
+
+      var _wifiNetworkListLocal;
+      _wifiNetworkListLocal = await wifiConfiguration.getWifiList();
+      setState(() {
+        _wifiNetworkList = _wifiNetworkListLocal;
+      }
+      );
+    }
+
+
   }
 
 
   Future<Null> _refreshList() async {
-    await Future.delayed(Duration(seconds: 2));
-
-    _checkConnection();
+    await Future.delayed(Duration(seconds: 1));
+    _getWifiList();
     return null;
   }
 }

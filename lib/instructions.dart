@@ -52,7 +52,6 @@ class HomePage extends StatelessWidget {
                       topRight: Radius.circular(20),
                     )),
                 child: Column(
-
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Padding(
@@ -67,67 +66,22 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Card(
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.check,
-//                          color: colors[3],
-                        color: Colors.green,
-                        ),
-                        title: Text(
-                          'This application is just for fun!!',
-                          style: TextStyle(
-                            fontFamily: 'Bitter',
-                          ),
-                        ),
-                        subtitle: Text(
-                            'It can only connect networks which starts with "Ubee"'),
-                      ),
+                    Cards(
+                      text: 'This application is just for fun!!',
+                      subtitle:
+                          'It can only connect networks which starts with "Ubee"',
                     ),
-                    Card(
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.check,
-//                          color: colors[3],
-                        color: Colors.green,
-                        ),
-                        title: Text(
-                          'Enable Wifi and location',
-                          style: TextStyle(
-                            fontFamily: 'Bitter',
-                          ),
-                        ),
-                      ),
+                    Cards(
+                      text: 'Enable Wifi and location',
+                      subtitle: '',
                     ),
-                    Card(
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.check,
-                          color: Colors.green,
-                        ),
-                        title: Text(
-                          'Go to Scan wifi Page',
-                          style: TextStyle(
-                            fontFamily: 'Bitter',
-                          ),
-                        ),
-
-                      ),
+                    Cards(
+                      text: 'Go to Scan wifi Page',
+                      subtitle: '',
                     ),
-                    Card(
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.check,
-                          color: Colors.green,
-                        ),
-                        title: Text(
-                          'Pull to refresh the screen ',
-                          style: TextStyle(
-                            fontFamily: 'Bitter',
-                          ),
-                        ),
-
-                      ),
+                    Cards(
+                      text: 'Pull to refresh the screen',
+                      subtitle: '',
                     ),
                   ],
                 ),
@@ -135,6 +89,37 @@ class HomePage extends StatelessWidget {
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class Cards extends StatelessWidget {
+  Cards({this.text, this.subtitle});
+
+  final String text;
+  final String subtitle ;
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+
+      child: ListTile(
+        leading: Icon(
+          Icons.check,
+//                          color: colors[3],
+          color: Colors.green,
+        ),
+        title: Text(
+          text,
+          style: TextStyle(
+            fontSize: 15.0,
+            fontFamily: 'Bitter',
+          ),
+        ),
+        subtitle: Text(subtitle,
+        style: TextStyle(
+          fontSize: 15.0,
+        ),),
       ),
     );
   }
