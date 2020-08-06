@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'constants.dart';
 class Instructions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -11,14 +11,6 @@ class Instructions extends StatelessWidget {
   }
 }
 
-final List<Color> colors = [
-  Color(0xff184042),
-  Color(0xff255152),
-  Color(0xff365F61),
-  Color(0xff4A7375),
-  Color(0xff5D8587),
-  Color(0xff7BA2A4),
-];
 
 class HomePage extends StatelessWidget {
   @override
@@ -28,7 +20,7 @@ class HomePage extends StatelessWidget {
       body: Stack(
         children: <Widget>[
           Container(
-            color: colors[5],
+            color: kColors[5],
           ),
           ListView(
             children: List.generate(
@@ -37,7 +29,7 @@ class HomePage extends StatelessWidget {
                     offset: Offset(100 * index.toDouble() - 210,
                         -77 * index.toDouble() + 29),
                     child: Transform.rotate(
-                        angle: 90, child: Columna(colors[index])))),
+                        angle: 90, child: Columna(kColors[index])))),
           ),
           SafeArea(
             child: Align(
@@ -59,7 +51,7 @@ class HomePage extends StatelessWidget {
                       child: Text(
                         'Instructions',
                         style: TextStyle(
-                          color: colors[3],
+                          color: kColors[3],
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'RobotoMono',

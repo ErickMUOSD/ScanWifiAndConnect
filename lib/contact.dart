@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-
+import 'constants.dart';
 class Contact extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Color(0xff365F61),
+        backgroundColor: kColors[2],
         body: SafeArea(
           child: Column(
             children: <Widget>[
@@ -14,10 +14,17 @@ class Contact extends StatelessWidget {
                 radius: 80.0,
                 backgroundImage: AssetImage('images/Erick_photo.jpg'),
               ),
-
-              Texts(text: 'Erick Sanabria',fontsize: 40.0, fontfamily: 'Pacifico',),
-              Texts(text: 'Flutter Developer',fontfamily: 'Source Sans Pro',fontsize: 20.0,),
-
+              Texts(
+                text: 'Erick Sanabria',
+                fontsize: 40.0,
+                fontfamily: 'Pacifico',
+              ),
+              Texts(
+                text: 'Flutter Developer',
+                fontfamily: 'Source Sans Pro',
+                fontsize: 20.0,
+                letterSpacing: 1.5,
+              ),
               SizedBox(
                 height: 20.0,
                 width: 150.0,
@@ -33,7 +40,12 @@ class Contact extends StatelessWidget {
                 text1: 'Martinoli944@gmail.com, ',
                 icon1: Icons.email,
               ),
-              Texts(text: 'This app is just for funn!! and for recreational purposes', fontsize: 13,fontfamily: 'Source Sans pro',),
+              Texts(
+                text:
+                    'This app is just for funn!! and for recreational purposes',
+                fontsize: 13,
+                fontfamily: 'Source Sans pro',
+              ),
             ],
           ),
         ),
@@ -43,16 +55,17 @@ class Contact extends StatelessWidget {
 }
 
 class Texts extends StatelessWidget {
- Texts({ this.text, this.fontsize, this.fontfamily});
-final String text;
- final double fontsize;
- final fontfamily;
-
+  Texts({this.text, this.fontsize, this.fontfamily, this.letterSpacing});
+  final String text;
+  final double fontsize;
+  final fontfamily;
+  final letterSpacing;
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
       style: TextStyle(
+          letterSpacing: letterSpacing,
           fontFamily: fontfamily,
           fontSize: fontsize,
           color: Colors.white,
@@ -72,7 +85,7 @@ class Cards extends StatelessWidget {
       child: ListTile(
         leading: Icon(
           icon1,
-          color: Color(0xff365F61),
+          color: kColors[2],
         ),
         title: Text(
           text1,
