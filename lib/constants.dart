@@ -14,4 +14,5 @@ const kStyleSsid = TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 25.0,
     fontFamily: 'Bitter');
-const kStyleBssid =  TextStyle(fontFamily: 'Bitter', fontSize: 20.0);
+const kStyleBssid =  TextStyle(fontFamily: 'Bitter', fontSize: 15.0);
+const kStyleButton = TextStyle(fontFamily: 'Bitter', fontSize: 20.0);

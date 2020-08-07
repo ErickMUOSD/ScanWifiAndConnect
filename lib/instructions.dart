@@ -58,22 +58,38 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Cards(
-                      text: 'This application is just for fun!!',
-                      subtitle:
-                          'It can only connect networks which starts with "Ubee"',
+                    Card(
+                       child:ListTile(
+                         leading: Icon(
+                           Icons.check,
+//                          color: colors[3],
+                           color: Colors.green,
+                         ),
+                         title: Text(
+                           'This application is just for fun!!',
+                           style: TextStyle(
+                             fontSize: 15.0,
+                             fontFamily: 'Bitter',
+                           ),
+                         ),
+                         subtitle: Text(
+                           'It can only connect networks called "Ubee1829 etc"'
+                         ),
+
+                       )
+
                     ),
                     Cards(
                       text: 'Enable Wifi and location',
-                      subtitle: '',
+
                     ),
                     Cards(
                       text: 'Go to Scan wifi Page',
-                      subtitle: '',
+
                     ),
                     Cards(
                       text: 'Pull to refresh the screen',
-                      subtitle: '',
+
                     ),
                   ],
                 ),
@@ -87,10 +103,10 @@ class HomePage extends StatelessWidget {
 }
 
 class Cards extends StatelessWidget {
-  Cards({this.text, this.subtitle});
+  Cards({this.text});
 
   final String text;
-  final String subtitle ;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -108,10 +124,7 @@ class Cards extends StatelessWidget {
             fontFamily: 'Bitter',
           ),
         ),
-        subtitle: Text(subtitle,
-        style: TextStyle(
-          fontSize: 15.0,
-        ),),
+
       ),
     );
   }

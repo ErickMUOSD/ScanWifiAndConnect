@@ -4,6 +4,7 @@ import 'package:wifi_configuration_2/wifi_configuration_2.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'constants.dart';
 import 'buttonbar.dart';
+import 'dialogs.dart';
 
 WifiConfiguration wifiConfiguration;
 
@@ -47,10 +48,28 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         title: Text(
           "Scan wifi",
-          style: kStyleBssid,
+          style: TextStyle(fontFamily: 'Bitter', fontSize: 35.0),
         ),
       ),
       body: widgets(),
+      floatingActionButton: FloatingActionButton.extended(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        backgroundColor: Colors.white,
+        tooltip: 'Tap to connect  manually',
+        onPressed: () {
+          showInputDialog(context);
+        },
+        label: Text(
+          'Manually',
+          style: TextStyle(fontSize: 13.0, color: Colors.black),
+        ),
+        icon: Icon(
+          Icons.add_circle,
+          color: kColors[1],
+        ),
+      ),
     );
   }
 
@@ -73,6 +92,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   _checkStateColor(wifiNetwork.ssid.substring(0, 4));
                   return SafeArea(
                     child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       elevation: 10,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,10 +157,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
                               getConnectionState();
                             },
-                            splashcolor: _isGood ? kGreenColor : kRedColor,
                             childs: Text(
                               'Connect',
-                              style: kStyleBssid,
+                              style: kStyleButton,
                             ),
                           )
                         ],
@@ -159,7 +180,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     switch (connectionStatus) {
       case WifiConnectionStatus.connected:
-        print("connected 1");
         _valueTextDialog1 = 'Connected';
         _valueTextDialog2 = 'Successfully Connected';
         _valueAnimation = '1';
@@ -170,38 +190,13 @@ class _MyHomePageState extends State<MyHomePage> {
         break;
 
       case WifiConnectionStatus.notConnected:
-        print("notConnected 3");
         _valueTextDialog1 = 'Failed';
         _valueTextDialog2 = 'Password incorrect or was changed by the owner';
         _valueAnimation = '2';
         break;
     }
-    showDialog(
-        context: context,
-        builder: (_) => AssetGiffyDialog(
-              image: Image.asset(
-                'animations/animation$_valueAnimation.gif',
-                fit: BoxFit.cover,
-              ),
-              title: Text(
-                _valueTextDialog1,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              description: Text(
-                _valueTextDialog2,
-                textAlign: TextAlign.center,
-              ),
-              entryAnimation: EntryAnimation.RIGHT,
-              onlyOkButton: true,
-              buttonOkColor: Colors.green,
-              onOkButtonPressed: () {
-                Navigator.of(context).pop();
-              },
-            ));
+    showAlertDialog(
+        context, _valueTextDialog1, _valueTextDialog2, _valueAnimation);
   }
 
   void _setValuesToConnect(String networkName, String networkMac) {
