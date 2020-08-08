@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wifi_configuration_2/wifi_configuration_2.dart';
-import 'package:giffy_dialog/giffy_dialog.dart';
+
 import 'constants.dart';
 import 'buttonbar.dart';
 import 'dialogs.dart';
@@ -21,7 +21,10 @@ class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
-
+enum wayToConnect{
+connectedAutomatically,
+  connectedManually
+}
 class _MyHomePageState extends State<MyHomePage> {
   GlobalKey<RefreshIndicatorState> refreshKey;
   bool _isGood = false;
@@ -31,6 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String _valueTextDialog1 = ' ',
       _valueTextDialog2 = ' ',
       _valueAnimation = '1';
+
   @override
   void initState() {
     super.initState();
@@ -152,8 +156,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           ButtonBars(
                             onpress: () {
-                              _setValuesToConnect(
-                                  wifiNetwork.ssid, wifiNetwork.bssid);
+                              setValuesToConnect(
+                                  wifiNetwork.ssid, wifiNetwork.bssid, wayToConnect.connectedAutomatically);
 
                               getConnectionState();
                             },
@@ -199,16 +203,21 @@ class _MyHomePageState extends State<MyHomePage> {
         context, _valueTextDialog1, _valueTextDialog2, _valueAnimation);
   }
 
-  void _setValuesToConnect(String networkName, String networkMac) {
-    String password, networkNameSUb;
-    if (networkName.length < 8) {
-      networkNameSUb = networkName.substring(4, networkName.length - 1);
-    } else {
-      networkNameSUb = networkName.substring(4, 8);
-    }
-    password =
-        networkMac.replaceAll(RegExp(':'), '').toUpperCase().substring(2, 8) +
-            networkNameSUb;
+  void setValuesToConnect(String networkName, String networkMac, wayToConnect wayTo ) {
+ String password, networkNameSUb;
+
+ if(wayTo == wayToConnect.connectedAutomatically){
+   print('AUTOMAAAAAAAAAAAAAATIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII');
+   if (networkName.length < 8) {
+     networkNameSUb = networkName.substring(4, networkName.length - 1);
+   } else {
+     networkNameSUb = networkName.substring(4, 8);
+   }
+   password =
+       networkMac.replaceAll(RegExp(':'), '').toUpperCase().substring(2, 8) +
+           networkNameSUb;
+ }
+
     setState(() {
       _wifiNameToConnect = networkName;
       _wifiPasswordToConnect = password;
