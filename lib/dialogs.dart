@@ -129,8 +129,6 @@ showInputDialog(BuildContext context) {
                 ),
                 onPressed: () {
                   Navigator.pop(context);
-                  print(myController1.text);
-                  print(myController2.text);
 
                 })
           ],

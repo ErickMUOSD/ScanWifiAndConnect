@@ -1,10 +1,10 @@
+import 'package:app/dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wifi_configuration_2/wifi_configuration_2.dart';
-
 import 'constants.dart';
 import 'buttonbar.dart';
-import 'dialogs.dart';
+import 'functions.dart';
 
 WifiConfiguration wifiConfiguration;
 
@@ -21,25 +21,20 @@ class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
-enum wayToConnect{
-connectedAutomatically,
-  connectedManually
-}
+
+
+
 class _MyHomePageState extends State<MyHomePage> {
   GlobalKey<RefreshIndicatorState> refreshKey;
-  bool _isGood = false;
-  List<WifiNetwork> _wifiNetworkList = List();
-  String _textMightAbleToConnect = '';
-  String _wifiNameToConnect = '', _wifiPasswordToConnect = '';
-  String _valueTextDialog1 = ' ',
-      _valueTextDialog2 = ' ',
-      _valueAnimation = '1';
 
+  WifiNetwork wifiNetwork;
+
+  WifiBrain wifi;
   @override
   void initState() {
     super.initState();
-    wifiConfiguration = WifiConfiguration();
-    _getWifiList();
+       getLis();
+
   }
 
   @override
@@ -63,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.white,
         tooltip: 'Tap to connect  manually',
         onPressed: () {
-          showInputDialog(context);
+
         },
         label: Text(
           'Manually',
@@ -77,6 +72,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+
+
   Column widgets() {
     return Column(
       children: <Widget>[
@@ -85,90 +82,27 @@ class _MyHomePageState extends State<MyHomePage> {
             key: refreshKey,
             onRefresh: () async {
               setState(() {
-                _wifiNetworkList.removeRange(0, _wifiNetworkList.length);
+               // _wifiNetworkList.removeRange(0, _wifiNetworkList.length);
               });
               await _refreshList();
             },
             child: ListView.builder(
-                itemCount: _wifiNetworkList.length,
+                itemCount: wifi.wifiNetworkList.length ,
                 itemBuilder: (context, int index) {
-                  WifiNetwork wifiNetwork = _wifiNetworkList[index];
-                  _checkStateColor(wifiNetwork.ssid.substring(0, 4));
-                  return SafeArea(
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      elevation: 10,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 10, top: 10),
-                                child: Icon(
-                                  _isGood
-                                      ? Icons.network_wifi
-                                      : Icons.wifi_lock,
-                                  color: _isGood ? kGreenColor : kRedColor,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 40,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10, bottom: 10),
-                                    child: Text(
-                                      wifiNetwork.ssid,
-                                      style: kStyleSsid,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: Text(
-                                      wifiNetwork.bssid,
-                                      style: kStyleBssid,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: Text(
-                                      _textMightAbleToConnect,
-                                      style: TextStyle(
-                                          color:
-                                              _isGood ? kGreenColor : kRedColor,
-                                          fontSize: 15.0,
-                                          fontFamily: 'Source Sans Pro'),
-                                    ),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                          ButtonBars(
-                            onpress: () {
-                              setValuesToConnect(
-                                  wifiNetwork.ssid, wifiNetwork.bssid, wayToConnect.connectedAutomatically);
+                 wifiNetwork = wifi.wifiNetworkList[index];
+                  //_checkStateColor(wifiNetwork.ssid.substring(0, 4));
+                  return Cards(
+                    iconWifi: wifi.isWell(wifiNetwork.ssid.substring(0,4)) ? Icons.network_wifi : Icons.wifi_lock,
+                    colorRedOrGreen: wifi.isWell(wifiNetwork.ssid.substring(0,4)) ? kGreenColor : kRedColor,
+                    textBssid: wifiNetwork.bssid,
+                    textSsid: wifiNetwork.ssid,
+                    textMightAbleToConnect: wifi.textMightBeAbleToConnect(wifiNetwork.ssid.substring(0,4)),
+                    press: () {
 
-                              getConnectionState();
-                            },
-                            childs: Text(
-                              'Connect',
-                              style: kStyleButton,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
+                       wifi.setValuesToConnect(wifiNetwork.ssid,wifiNetwork.bssid,wayToConnectWifi.connectedAutomatically);
+                          showingAlertDialog(context);
+
+    },
                   );
                 }),
           ),
@@ -177,76 +111,105 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void getConnectionState() async {
-    WifiConnectionStatus connectionStatus =
-        await wifiConfiguration.connectToWifi(_wifiNameToConnect,
-            _wifiPasswordToConnect, "wifi_configuration_2.dart");
 
-    switch (connectionStatus) {
-      case WifiConnectionStatus.connected:
-        _valueTextDialog1 = 'Connected';
-        _valueTextDialog2 = 'Successfully Connected';
-        _valueAnimation = '1';
-        break;
 
-      case WifiConnectionStatus.alreadyConnected:
-        print("alreadyConnected 2 ");
-        break;
+  void getLis() async {
+    wifi = WifiBrain();
+    await wifi.getWifiList();
 
-      case WifiConnectionStatus.notConnected:
-        _valueTextDialog1 = 'Failed';
-        _valueTextDialog2 = 'Password incorrect or was changed by the owner';
-        _valueAnimation = '2';
-        break;
-    }
-    showAlertDialog(
-        context, _valueTextDialog1, _valueTextDialog2, _valueAnimation);
   }
+void showingAlertDialog(BuildContext context) async{
+   await wifi.getConnectionState(wifi.NetWorkName, wifi.Paswword);
+   showAlertDialog(context, wifi.valueTextDialog1, wifi.valueTextDialog2, wifi.valueAnimation);
+}
 
-  void setValuesToConnect(String networkName, String networkMac, wayToConnect wayTo ) {
- String password, networkNameSUb;
-
- if(wayTo == wayToConnect.connectedAutomatically){
-   print('AUTOMAAAAAAAAAAAAAATIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII');
-   if (networkName.length < 8) {
-     networkNameSUb = networkName.substring(4, networkName.length - 1);
-   } else {
-     networkNameSUb = networkName.substring(4, 8);
-   }
-   password =
-       networkMac.replaceAll(RegExp(':'), '').toUpperCase().substring(2, 8) +
-           networkNameSUb;
- }
-
-    setState(() {
-      _wifiNameToConnect = networkName;
-      _wifiPasswordToConnect = password;
-    });
-  }
-
-  void _checkStateColor(String nameSsid) {
-    nameSsid == 'Ubee' ? _isGood = true : _isGood = false;
-    nameSsid == 'Ubee'
-        ? _textMightAbleToConnect = 'Network  might be able to connect'
-        : _textMightAbleToConnect = 'Network might not be able to connect';
-  }
-
-  Future<void> _getWifiList() async {
-    WifiConnectionObject wifiConnectionObject =
-        await wifiConfiguration.connectedToWifi();
-
-    if (wifiConnectionObject != null) {
-      var _wifiNetworkListLocal;
-      _wifiNetworkListLocal = await wifiConfiguration.getWifiList();
-      setState(() {
-        _wifiNetworkList = _wifiNetworkListLocal;
-      });
-    }
-  }
 
   Future<Null> _refreshList() async {
     await Future.delayed(Duration(seconds: 1));
-    _getWifiList();
+    getLis();
     return null;
+  }
+}
+
+class Cards extends StatelessWidget {
+  Cards(
+      {this.colorRedOrGreen,
+      this.textBssid,
+      this.textMightAbleToConnect,
+      this.iconWifi,
+      this.press,
+      this.textSsid});
+  final IconData iconWifi;
+  final String textBssid;
+  final String textMightAbleToConnect;
+  final Color colorRedOrGreen;
+  final Function press;
+  final String textSsid;
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      elevation: 10,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 10, top: 10),
+                child: Icon(
+                  iconWifi,
+                  color: colorRedOrGreen,
+                ),
+              ),
+              SizedBox(
+                width: 40,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10, bottom: 10),
+                    child: Text(
+                      textSsid,
+                      style: kStyleSsid,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      textBssid,
+                      style: kStyleBssid,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      textMightAbleToConnect,
+                      style: TextStyle(
+                          color: colorRedOrGreen,
+                          fontSize: 15.0,
+                          fontFamily: 'Source Sans Pro'),
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
+          ButtonBars(
+            onpress: press,
+            childs: Text(
+              'Connect',
+              style: kStyleButton,
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
