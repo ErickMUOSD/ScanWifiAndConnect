@@ -2,12 +2,13 @@ import 'package:app/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
-import 'scanwifi.dart';
+
+import 'functions.dart';
 
 final myController1 = TextEditingController();
 final myController2 = TextEditingController();
 
-Scanwifi wifi = Scanwifi();
+
 
 showAlertDialog(BuildContext context, String valueText1, String valueText2,
     String valueAnimation) {
@@ -65,16 +66,23 @@ showInputDialog(BuildContext context) {
                 controller: myController1,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.transparent),
+                    borderRadius:  BorderRadius.all(Radius.circular(30)),
+
+                  ),
                     contentPadding: EdgeInsets.only(bottom: 10.0, left: 20.0),
                     enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.transparent),
                         borderRadius: BorderRadius.all(Radius.circular(30))),
                     border: OutlineInputBorder(
+
                         borderSide: BorderSide(color: Colors.transparent),
                         borderRadius: BorderRadius.all(Radius.circular(30))),
                     hintStyle: TextStyle(
                       color: Colors.black,
                     ),
+                    labelStyle: TextStyle(color: Colors.teal),
                     filled: true,
                     fillColor: Colors.grey[200],
                     labelText: 'Ssid Name',
@@ -84,9 +92,16 @@ showInputDialog(BuildContext context) {
                 height: 25.0,
               ),
               TextField(
+
                 controller: myController2,
                 keyboardType: TextInputType.text,
+
                 decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                      borderRadius:  BorderRadius.all(Radius.circular(30)),
+
+                    ),
                     contentPadding: EdgeInsets.only(bottom: 10.0, left: 20.0),
                     enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.transparent),
@@ -97,6 +112,7 @@ showInputDialog(BuildContext context) {
                     hintStyle: TextStyle(
                       color: Colors.black,
                     ),
+                    labelStyle: TextStyle(color: Colors.teal),
                     filled: true,
                     fillColor: Colors.grey[200],
                     labelText: 'Password',
@@ -116,6 +132,8 @@ showInputDialog(BuildContext context) {
                 ),
                 onPressed: () {
                   Navigator.pop(context);
+                  myController1.clear();
+                  myController2.clear();
                 }),
             FlatButton(
                 child: Text(
@@ -129,9 +147,20 @@ showInputDialog(BuildContext context) {
                 ),
                 onPressed: () {
                   Navigator.pop(context);
+                  print(myController1.text);
+                  print(myController2.text);
+                  showingAlertDialog();
 
-                })
+                }
+                )
           ],
         );
       });
+}
+void showingAlertDialog() async{
+
+  WifiBrain wifi =WifiBrain();
+ await  wifi.getConnectionState(myController1.text, myController2.text);
+
+
 }

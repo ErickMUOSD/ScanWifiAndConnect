@@ -28,12 +28,12 @@ class _MyHomePageState extends State<MyHomePage> {
   GlobalKey<RefreshIndicatorState> refreshKey;
 
   WifiNetwork wifiNetwork;
-
+  List<WifiNetwork> wifiNetworkListLocal = List();
   WifiBrain wifi;
   @override
   void initState() {
     super.initState();
-       getLis();
+       getList();
 
   }
 
@@ -58,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.white,
         tooltip: 'Tap to connect  manually',
         onPressed: () {
-
+     showInputDialog(context);
         },
         label: Text(
           'Manually',
@@ -87,9 +87,9 @@ class _MyHomePageState extends State<MyHomePage> {
               await _refreshList();
             },
             child: ListView.builder(
-                itemCount: wifi.wifiNetworkList.length ,
+                itemCount: wifiNetworkListLocal.length ,
                 itemBuilder: (context, int index) {
-                 wifiNetwork = wifi.wifiNetworkList[index];
+                 wifiNetwork = wifiNetworkListLocal[index];
                   //_checkStateColor(wifiNetwork.ssid.substring(0, 4));
                   return Cards(
                     iconWifi: wifi.isWell(wifiNetwork.ssid.substring(0,4)) ? Icons.network_wifi : Icons.wifi_lock,
@@ -113,9 +113,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
-  void getLis() async {
+  void getList() async {
     wifi = WifiBrain();
     await wifi.getWifiList();
+    setState(() {
+     wifiNetworkListLocal=   wifi.wifiNetworkList;
+    });
 
   }
 void showingAlertDialog(BuildContext context) async{
@@ -126,7 +129,7 @@ void showingAlertDialog(BuildContext context) async{
 
   Future<Null> _refreshList() async {
     await Future.delayed(Duration(seconds: 1));
-    getLis();
+    getList();
     return null;
   }
 }

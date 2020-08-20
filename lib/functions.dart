@@ -57,18 +57,22 @@ enum wayToConnectWifi { connectedAutomatically, connectedManually }
          valueTextDialog1 = 'Connected';
          valueTextDialog2 = 'Successfully Connected';
          valueAnimation = '1';
-         print('connected');
+         print('connected eh');
          break;
 
        case WifiConnectionStatus.profileAlreadyInstalled:
+
          break;
        case WifiConnectionStatus.locationNotAllowed:
+         break;
+       case WifiConnectionStatus.alreadyConnected:
+         print('already connected ');
          break;
        case WifiConnectionStatus.notConnected:
          valueTextDialog1 = 'Failed';
          valueTextDialog2 = 'Password incorrect or was changed by the owner';
          valueAnimation = '2';
-         print('Not connected');
+         print('Not connected eh');
          break;
      }
 //     showAlertDialog(
