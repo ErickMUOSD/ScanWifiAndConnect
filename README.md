@@ -1,7 +1,7 @@
 # Scan wifi And connect
-#It is made with dart and flutter!!
+## It is made with dart and flutter!!
 
-## Aplicación
+## About 
 
 This application allows you scan all wifi Aps around. 
 it can only connect some routers such as : 'Ubeef81982 -34g'. This is a router's vulnerability in México.
